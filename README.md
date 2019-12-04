@@ -5,9 +5,7 @@ With Input Calculator widget you can add functionality of calculation in an Text
 ## examples
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/ThomasEcalle/delayed_display/master/documentation/horizontal.gif" width="140" height="280" hspace="20"/>
-  
-<img src="https://raw.githubusercontent.com/ThomasEcalle/delayed_display/master/documentation/vertical.gif" width="140" height="280" hspace="20"/>
+<img src="https://raw.githubusercontent.com/Gperez88/input_calculator/master/images/screen_shot.png" width="140" height="280" hspace="20"/>
 </p>
 
 ## Usage
@@ -17,7 +15,7 @@ Initializer `InputCalculator` on `onGenerateRoute`:
 ```dart
 Route<dynamic> _generateRoute(RouteSettings settings) {
   switch (settings.name) {
-      
+
     ...
 
     case InputCalculator.id:
