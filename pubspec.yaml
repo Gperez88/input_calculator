@@ -1,8 +1,8 @@
 name: input_calculator
 description: With Input Calculator you can add functionality of calculation in an TextField.
-version: 0.0.1
+version: 1.0.0
 author: Gperez88
-homepage:
+homepage: https://github.com/Gperez88/input_calculator
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
