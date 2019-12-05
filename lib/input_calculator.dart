@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show NumberFormat;
 
-import 'internal/numeric_text_field.dart';
+import 'numeric_text_field.dart';
 
 class CalculatorOperator {
   static const none = 'none';

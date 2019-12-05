@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:input_calculator/src/input_calculator.dart';
+import 'package:input_calculator/input_calculator.dart';
 
 class HomePage extends StatefulWidget {
   static const id = 'home_page';

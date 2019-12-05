@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'home_page.dart';
-import 'package:input_calculator/src/input_calculator.dart';
+import 'package:input_calculator/input_calculator.dart';
 
 Route<dynamic> _generateRoute(RouteSettings settings) {
   switch (settings.name) {
