@@ -1,3 +1,4 @@
+import 'package:example/utils.dart';
 import 'package:flutter/material.dart';
 
 import 'package:input_calculator/input_calculator.dart';
@@ -16,6 +17,10 @@ class _HomePageState extends State<HomePage> {
     _value = value;
   }
 
+  String valueFormat(double value) {
+    return CurrencyFormat.format(value, symbol: '');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,6 +29,7 @@ class _HomePageState extends State<HomePage> {
         padding: EdgeInsets.all(32.0),
         child: CalculatorTextField(
           initialValue: _value,
+          valueFormat: valueFormat,
           inputDecoration: InputDecoration(
             labelText: 'Value',
             icon: Icon(Icons.attach_money),

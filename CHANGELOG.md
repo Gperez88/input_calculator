@@ -1,3 +1,8 @@
+## [1.0.2+2] - 26.04.2020.
+
+* Fixed initial value of textField.
+* Add value format.
+  
 ## [1.0.2+1] - 26.04.2020.
 
 * Fixed textField input decoration.

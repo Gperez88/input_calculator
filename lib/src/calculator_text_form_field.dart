@@ -21,6 +21,7 @@ class CalculatorTextFormField extends StatefulWidget with BaseTextField {
     this.strutStyle,
     this.textAlign = TextAlign.start,
     this.validator,
+    this.valueFormat,
   }) : super(key: key);
 
   final String title;
@@ -39,6 +40,7 @@ class CalculatorTextFormField extends StatefulWidget with BaseTextField {
   final StrutStyle strutStyle;
   final TextAlign textAlign;
   final FormFieldValidator<String> validator;
+  final ValueFormat<double> valueFormat;
 
   @override
   _CalculatorTextFormFieldState createState() =>
@@ -47,6 +49,11 @@ class CalculatorTextFormField extends StatefulWidget with BaseTextField {
 
 class _CalculatorTextFormFieldState extends State<CalculatorTextFormField> {
   final inputController = TextEditingController();
+
+  void setValue(value) {
+    inputController.text =
+        widget.valueFormat != null ? widget.valueFormat(value) : '$value';
+  }
 
   @override
   Widget build(BuildContext context) {

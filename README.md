@@ -1,16 +1,16 @@
 # input_calculator
 
-With Input Calculator widget you can add functionality of calculation in an TextField.
+With Input Calculator widget you can add functionality of calculation to a TextField.
 
 ## examples
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/Gperez88/input_calculator/master/images/screen_shot.png" width="140" height="280" hspace="20"/>
+<img src="https://raw.githubusercontent.com/Gperez88/input_calculator/master/images/screen_shot.png" width="210" height="420" hspace="20"/>
 </p>
 
 ## Usage
 
-CalculatorTextField
+#### CalculatorTextField
 
 ```dart
 ...
@@ -26,7 +26,7 @@ CalculatorTextField(
 ...
 ```
 
-CalculatorTextFormField
+#### CalculatorTextFormField
 
 ```dart
 ...
@@ -50,9 +50,9 @@ CalculatorTextFormField(
 
 ## Let's customize it !
 
+#### Calculator
+
 - `title`: title to show on appbar.
-  
-- `initialValue`: initial value to show.
   
 - `appBarBackgroundColor`: appbar color.
 
@@ -69,4 +69,12 @@ CalculatorTextFormField(
 - `doneButtonColor`: color done button.
   
 - `doneTextButtonColor`: color text of done button.
+
+#### TextField
+
+- `initialValue`: initial value to show.
+
+- `inputDecoration`: decotation of textField.
+  
+- `valueFormat`: format value of textField.
 
