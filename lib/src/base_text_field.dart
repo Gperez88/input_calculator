@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import 'calculator.dart';
 
+typedef ValueFormat<T> = String Function(T value);
+
 mixin BaseTextField {
   // calculator
   String get title;
