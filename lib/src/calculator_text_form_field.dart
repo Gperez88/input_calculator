@@ -57,6 +57,7 @@ class _CalculatorTextFormFieldState extends State<CalculatorTextFormField> {
       strutStyle: widget.strutStyle,
       textAlign: widget.textAlign,
       validator: widget.validator,
+      decoration: widget.inputDecoration,
       onTap: () async {
         final resutl = await widget.showInputCalculator(context);
         setState(() {
