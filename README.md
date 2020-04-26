@@ -10,97 +10,63 @@ With Input Calculator widget you can add functionality of calculation in an Text
 
 ## Usage
 
-Initializer `InputCalculator` on `onGenerateRoute`:
-
-```dart
-Route<dynamic> _generateRoute(RouteSettings settings) {
-  switch (settings.name) {
-
-    ...
-
-    case InputCalculator.id:
-      final args = settings.arguments;
-      return MaterialPageRoute(builder: (_) => InputCalculator(args: args));
-
-    ...
-  }
-}
-```
-
-on the widget that use it
+CalculatorTextField
 
 ```dart
 ...
 
-TextField(
-    controller: _inputController,
-    readOnly: true,
-    onTap: () => _showInputCalculator(context),
+CalculatorTextField(
+  initialValue: _value,
+  onSubmitted: (value) {
+    _value = value;
+    print('value: $_value');
+  },
 )
 
 ...
 ```
 
-`_inputController` TextEditingController to pass result value of return of `InputCalculator`
-
-set `readOnly: true` for not show system keyboard
-
-`_showInputCalculator` is the method to show `InputCalculator`
+CalculatorTextFormField
 
 ```dart
-  void _showInputCalculator(BuildContext context) async {
-    final result = await Navigator.of(context).pushNamed(
-      InputCalculator.id,
-      arguments: InputCalculatorArgs(
+...
 
-        ...
+CalculatorTextFormField(
+  initialValue: _value,
+  validator: (value) {
+    if (value.isEmpty) {
+      return 'Madatory field';
+    }
+    return null;
+  }, 
+  onSubmitted: (value) {
+    _value = value;
+    print('value: $_value');
+  },
+)
 
-      ),
-    );
-
-    ...
-  }
+...
 ```
-
 
 ## Let's customize it !
 
-`InputCalculatorArgs` object of arguments supported of the widget for customize it.
-
-```dart
-class InputCalculatorArgs {
-  String title;
-  double initialValue;
-  BoxDecoration decoration;
-  Color appBarBackgroundColor;
-  Color operatorButtonColor;
-  Color normalButtonColor;
-  Color operatorTextButtonColor;
-  Color normalTextButtonColor;
-  Color doneButtonColor;
-  Color doneTextButtonColor;
-
-  ...
-}
-```
-
 - `title`: title to show on appbar.
+  
+- `initialValue`: initial value to show.
   
 - `appBarBackgroundColor`: appbar color.
 
-- `initialValue`: initial value to show on input calculator.
+- `boxDecoration`: decotation of panel buttons.
+  
+- `operatorButtonColor`: color operator button.
+  
+- `operatorTextButtonColor`: color text of operator button.
 
-- `decoration`: decotation of panel buttons of input calculator.
+- `normalButtonColor`: color normal button.
   
-- `operatorButtonColor`: color operator button of input calculator.
-  
-- `operatorTextButtonColor`: color text of operator button of input calculator.
+- `normalTextButtonColor`: color text of normal button.
 
-- `normalButtonColor`: color normal button of input calculator.
+- `doneButtonColor`: color done button.
   
-- `normalTextButtonColor`: color text of normal button of input calculator.
-
-- `doneButtonColor`: color done button of input calculator.
-  
-- `doneTextButtonColor`: color text of done button of input calculator.
+- `doneTextButtonColor`: color text of done button.
 
