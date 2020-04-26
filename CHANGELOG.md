@@ -1,3 +1,7 @@
+## [1.0.2+1] - 26.04.2020.
+
+* Fixed textField input decoration.
+
 ## [1.0.2] - 26.04.2020.
 
 * Changed the way to call the calculator.

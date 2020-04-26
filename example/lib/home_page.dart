@@ -24,6 +24,10 @@ class _HomePageState extends State<HomePage> {
         padding: EdgeInsets.all(32.0),
         child: CalculatorTextField(
           initialValue: _value,
+          inputDecoration: InputDecoration(
+            labelText: 'Value',
+            icon: Icon(Icons.attach_money),
+          ),
           onSubmitted: (value) {
             this.value = value;
             print('value: $value');
