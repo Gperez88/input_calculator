@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'home_page.dart';
-import 'package:input_calculator/input_calculator.dart';
 
 Route<dynamic> _generateRoute(RouteSettings settings) {
   switch (settings.name) {
     case HomePage.id:
       return MaterialPageRoute(builder: (_) => HomePage());
-    case InputCalculator.id:
-      final args = settings.arguments;
-      return MaterialPageRoute(builder: (_) => InputCalculator(args: args));
     default:
       return MaterialPageRoute(
         builder: (context) => Scaffold(
