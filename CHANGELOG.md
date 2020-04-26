@@ -1,3 +1,7 @@
+## [1.0.2+3] - 26.04.2020.
+
+* Fixed value format on CalculatorTextFormField.
+  
 ## [1.0.2+2] - 26.04.2020.
 
 * Fixed initial value of textField.

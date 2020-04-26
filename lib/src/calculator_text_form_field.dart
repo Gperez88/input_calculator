@@ -50,6 +50,13 @@ class CalculatorTextFormField extends StatefulWidget with BaseTextField {
 class _CalculatorTextFormFieldState extends State<CalculatorTextFormField> {
   final inputController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+
+    setValue(widget.initialValue);
+  }
+
   void setValue(value) {
     inputController.text =
         widget.valueFormat != null ? widget.valueFormat(value) : '$value';
@@ -66,11 +73,11 @@ class _CalculatorTextFormFieldState extends State<CalculatorTextFormField> {
       validator: widget.validator,
       decoration: widget.inputDecoration,
       onTap: () async {
-        final resutl = await widget.showInputCalculator(context);
+        final result = await widget.showInputCalculator(context);
         setState(() {
-          inputController.text = '${resutl ?? 0.0}';
+          setValue(result);
 
-          if (widget.onSubmitted != null) widget.onSubmitted(resutl);
+          if (widget.onSubmitted != null) widget.onSubmitted(result);
         });
       },
     );
