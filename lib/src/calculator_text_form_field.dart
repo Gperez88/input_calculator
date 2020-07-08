@@ -22,6 +22,7 @@ class CalculatorTextFormField extends StatefulWidget with BaseTextField {
     this.textAlign = TextAlign.start,
     this.validator,
     this.valueFormat,
+    this.allowNegativeResult = true,
   }) : super(key: key);
 
   final String title;
@@ -41,6 +42,7 @@ class CalculatorTextFormField extends StatefulWidget with BaseTextField {
   final TextAlign textAlign;
   final FormFieldValidator<String> validator;
   final ValueFormat<double> valueFormat;
+  final bool allowNegativeResult;
 
   @override
   _CalculatorTextFormFieldState createState() =>

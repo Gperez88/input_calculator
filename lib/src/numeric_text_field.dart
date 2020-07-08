@@ -14,6 +14,7 @@ class NumericTextField extends StatefulWidget {
   final ValueChanged<String> onChanged;
   final VoidCallback onEditingComplete;
   final ValueChanged<String> onSubmitted;
+  final bool allowNegativeResult;
 
   NumericTextField({
     Key key,
@@ -27,6 +28,7 @@ class NumericTextField extends StatefulWidget {
     this.onChanged,
     this.onEditingComplete,
     this.onSubmitted,
+    this.allowNegativeResult = true,
   }) : super(key: key);
 
   @override
@@ -36,6 +38,7 @@ class NumericTextField extends StatefulWidget {
 class _NumericTextFieldState extends State<NumericTextField> {
   static const String GROUPING_SEPARATOR = ',';
   static const String DECIMAL_SEPARATOR = '.';
+  static const String NEGATIVE = '-';
   static const String LEADING_ZERO_FILTER_REGEX = "^0+(?!\$)";
 
   TextEditingController _controller;
@@ -46,6 +49,8 @@ class _NumericTextFieldState extends State<NumericTextField> {
   String _mDefaultText;
   String _mPreviousText = "";
   String _mNumberFilterRegex = "[^\\d\\$DECIMAL_SEPARATOR]";
+  String _mWithNegativeNumberFilterRegex =
+      "[^\\d\\$DECIMAL_SEPARATOR\\$NEGATIVE]";
 
   String _mDecimalSeparator = DECIMAL_SEPARATOR;
   bool _hasCustomDecimalSeparator = false;
@@ -133,6 +138,7 @@ class _NumericTextFieldState extends State<NumericTextField> {
     _mDecimalSeparator = customDecimalSeparator;
     _hasCustomDecimalSeparator = true;
     _mNumberFilterRegex = "[^\\d\\$_mDecimalSeparator]";
+    _mWithNegativeNumberFilterRegex = "[^\\d\\$_mDecimalSeparator\\$NEGATIVE]";
   }
 
   /*
@@ -153,8 +159,13 @@ class _NumericTextFieldState extends State<NumericTextField> {
   * @return numeric value
   */
   double getNumericValue() {
-    var original =
-        _effectiveController.text.replaceAll(RegExp(_mNumberFilterRegex), '');
+    final allowNegativeResult = widget.allowNegativeResult;
+
+    var original = _effectiveController.text.replaceAll(
+        RegExp(allowNegativeResult
+            ? _mWithNegativeNumberFilterRegex
+            : _mNumberFilterRegex),
+        '');
 
     if (_hasCustomDecimalSeparator) {
       // swap custom decimal separator with locale one to allow parsing
@@ -177,8 +188,14 @@ class _NumericTextFieldState extends State<NumericTextField> {
   String format(final String original) {
     final List parts = original.split("$_mDecimalSeparator");
 
+    final allowNegativeResult = widget.allowNegativeResult;
+
     String number = parts[0]
-        .replaceAll(RegExp(_mNumberFilterRegex), '')
+        .replaceAll(
+            RegExp(allowNegativeResult
+                ? _mWithNegativeNumberFilterRegex
+                : _mNumberFilterRegex),
+            '')
         .replaceFirst(RegExp(LEADING_ZERO_FILTER_REGEX), '');
 
     // only add grouping separators for non custom decimal separator

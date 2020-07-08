@@ -14,7 +14,9 @@ class _HomePageState extends State<HomePage> {
   double _value = 0.0;
 
   set value(double value) {
-    _value = value;
+    setState(() {
+      _value = value;
+    });
   }
 
   String valueFormat(double value) {
@@ -30,6 +32,7 @@ class _HomePageState extends State<HomePage> {
         child: CalculatorTextField(
           initialValue: _value,
           valueFormat: valueFormat,
+          allowNegativeResult: false,
           inputDecoration: InputDecoration(
             labelText: 'Value',
             icon: Icon(Icons.attach_money),

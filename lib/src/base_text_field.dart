@@ -17,6 +17,7 @@ mixin BaseTextField {
   Color get normalTextButtonColor;
   Color get doneButtonColor;
   Color get doneTextButtonColor;
+  bool get allowNegativeResult;
 
   Future<double> showInputCalculator(BuildContext context) async {
     final args = InputCalculatorArgs(
@@ -30,6 +31,7 @@ mixin BaseTextField {
       normalTextButtonColor: normalTextButtonColor,
       doneButtonColor: doneButtonColor,
       doneTextButtonColor: doneTextButtonColor,
+      allowNegativeResult: allowNegativeResult ?? true,
     );
 
     final result = await Navigator.of(context).push(

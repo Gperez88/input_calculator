@@ -64,16 +64,17 @@ const List<List<String>> _keyRows = [
 ];
 
 class InputCalculatorArgs {
-  String title;
-  double initialValue;
-  BoxDecoration boxDecoration;
-  Color appBarBackgroundColor;
-  Color operatorButtonColor;
-  Color normalButtonColor;
-  Color operatorTextButtonColor;
-  Color normalTextButtonColor;
-  Color doneButtonColor;
-  Color doneTextButtonColor;
+  final String title;
+  final double initialValue;
+  final BoxDecoration boxDecoration;
+  final Color appBarBackgroundColor;
+  final Color operatorButtonColor;
+  final Color normalButtonColor;
+  final Color operatorTextButtonColor;
+  final Color normalTextButtonColor;
+  final Color doneButtonColor;
+  final Color doneTextButtonColor;
+  final bool allowNegativeResult;
 
   InputCalculatorArgs({
     this.title,
@@ -86,6 +87,7 @@ class InputCalculatorArgs {
     this.normalTextButtonColor,
     this.doneButtonColor,
     this.doneTextButtonColor,
+    this.allowNegativeResult = true,
   });
 }
 
@@ -94,9 +96,7 @@ class Calculator extends StatefulWidget {
 
   final InputCalculatorArgs args;
 
-  Calculator({
-    this.args,
-  });
+  Calculator({this.args});
 
   @override
   _CalculatorState createState() => _CalculatorState();
@@ -390,6 +390,7 @@ class _CalculatorState extends State<Calculator> {
                       controller: _inputNumberController,
                       textAlign: TextAlign.end,
                       readOnly: true,
+                      allowNegativeResult: widget.args.allowNegativeResult,
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         hintText: '0',

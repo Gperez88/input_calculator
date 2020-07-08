@@ -69,6 +69,8 @@ CalculatorTextFormField(
 - `doneButtonColor`: color done button.
   
 - `doneTextButtonColor`: color text of done button.
+  
+- `allowNegativeResult`: allow negative result (default = true).
 
 #### TextField
 
