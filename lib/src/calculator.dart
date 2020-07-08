@@ -487,9 +487,9 @@ class _CalculatorState extends State<Calculator> {
               bottom: 0.0,
               child: Container(
                 decoration: widget.args.theme.panelButtonDecoration,
-                padding: EdgeInsets.all(isFlatTheme ? 0.0 : 16.0),
+                padding: EdgeInsets.all(isFlatTheme ? 0.0 : 8.0),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: _buildKeyRows(context, isFlatTheme),
                 ),
@@ -505,7 +505,7 @@ class _CalculatorState extends State<Calculator> {
     List<Widget> keyRows = [];
     //final screenHeight = MediaQuery.of(context).size.height;
 
-    var padding = EdgeInsets.all(isFlatTheme ? 0.0 : 8.0);
+    var padding = EdgeInsets.all(isFlatTheme ? 0.0 : 4.0);
 
     // if (screenHeight <= 550) {
     //   padding = EdgeInsets.all(1.0);

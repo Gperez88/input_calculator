@@ -65,7 +65,7 @@ CalculatorTextFormField(
   
 - `appBarBackgroundColor`: appbar color.
 
-- `theme`: allows two themes (default: curve).
+- `theme`: allows two themes [`CalculatorThemes.curve` | `CalculatorThemes.flat`] (default: curve).
   
 - `operatorButtonColor`: color operator button.
   

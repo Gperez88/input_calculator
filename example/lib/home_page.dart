@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
         child: CalculatorTextField(
           initialValue: _value,
           valueFormat: valueFormat,
-          theme: CalculatorThemes.flat,
+          theme: CalculatorThemes.curve,
           inputDecoration: InputDecoration(
             labelText: 'Value',
             icon: Icon(Icons.attach_money),
