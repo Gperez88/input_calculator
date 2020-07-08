@@ -1,3 +1,7 @@
+## [1.1.0+5] - 08.07.2020.
+
+* Themes [`CalculatorThemes.curve` | `CalculatorThemes.flat`].
+
 ## [1.0.3+4] - 07.07.2020.
 
 * Handle negative result.
