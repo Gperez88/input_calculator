@@ -2,11 +2,20 @@
 
 With Input Calculator widget you can add functionality of calculation to a TextField.
 
-## examples
+## Themes
 
+
+#### curve theme
 <p align="center">
-<img src="https://raw.githubusercontent.com/Gperez88/input_calculator/master/images/screen_shot.png" width="210" height="420" hspace="20"/>
+<img src="https://raw.githubusercontent.com/Gperez88/input_calculator/master/images/curve_theme.png" width="210" height="420" hspace="20"/>
 </p>
+
+
+#### flat theme
+<p align="center">
+<img src="https://raw.githubusercontent.com/Gperez88/input_calculator/master/images/flat_theme.png" width="210" height="420" hspace="20"/>
+</p>
+
 
 ## Usage
 
@@ -56,7 +65,7 @@ CalculatorTextFormField(
   
 - `appBarBackgroundColor`: appbar color.
 
-- `boxDecoration`: decotation of panel buttons.
+- `theme`: allows two themes [`CalculatorThemes.curve` | `CalculatorThemes.flat`] (default: curve).
   
 - `operatorButtonColor`: color operator button.
   
@@ -69,6 +78,8 @@ CalculatorTextFormField(
 - `doneButtonColor`: color done button.
   
 - `doneTextButtonColor`: color text of done button.
+  
+- `allowNegativeResult`: allow negative result (default: true).
 
 #### TextField
 

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:input_calculator/src/themes.dart';
 
 import 'base_text_field.dart';
+import 'calculator.dart';
 
 class CalculatorTextFormField extends StatefulWidget with BaseTextField {
   CalculatorTextFormField({
@@ -22,6 +24,8 @@ class CalculatorTextFormField extends StatefulWidget with BaseTextField {
     this.textAlign = TextAlign.start,
     this.validator,
     this.valueFormat,
+    this.allowNegativeResult = true,
+    this.theme = CalculatorThemes.curve,
   }) : super(key: key);
 
   final String title;
@@ -41,6 +45,8 @@ class CalculatorTextFormField extends StatefulWidget with BaseTextField {
   final TextAlign textAlign;
   final FormFieldValidator<String> validator;
   final ValueFormat<double> valueFormat;
+  final bool allowNegativeResult;
+  final CalculatorThemes theme;
 
   @override
   _CalculatorTextFormFieldState createState() =>
@@ -49,6 +55,13 @@ class CalculatorTextFormField extends StatefulWidget with BaseTextField {
 
 class _CalculatorTextFormFieldState extends State<CalculatorTextFormField> {
   final inputController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    setValue(widget.initialValue);
+  }
 
   void setValue(value) {
     inputController.text =
@@ -66,11 +79,11 @@ class _CalculatorTextFormFieldState extends State<CalculatorTextFormField> {
       validator: widget.validator,
       decoration: widget.inputDecoration,
       onTap: () async {
-        final resutl = await widget.showInputCalculator(context);
+        final result = await widget.showInputCalculator(context);
         setState(() {
-          inputController.text = '${resutl ?? 0.0}';
+          setValue(result);
 
-          if (widget.onSubmitted != null) widget.onSubmitted(resutl);
+          if (widget.onSubmitted != null) widget.onSubmitted(result);
         });
       },
     );

@@ -1,3 +1,15 @@
+## [1.1.0+5] - 08.07.2020.
+
+* Themes [`CalculatorThemes.curve` | `CalculatorThemes.flat`].
+
+## [1.0.3+4] - 07.07.2020.
+
+* Handle negative result.
+
+## [1.0.2+3] - 26.04.2020.
+
+* Fixed value format on CalculatorTextFormField.
+  
 ## [1.0.2+2] - 26.04.2020.
 
 * Fixed initial value of textField.
