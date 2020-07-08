@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:input_calculator/src/themes.dart';
 import 'package:intl/intl.dart' show NumberFormat;
 
 import 'numeric_text_field.dart';
@@ -11,6 +12,7 @@ class CalculatorOperator {
   static const division = '/';
   static const clear = 'C';
   static const del = 'DEL';
+  static const plusMinus = '±';
   static const equal = '=';
   static const submit = "DONE";
 
@@ -27,6 +29,7 @@ class CalculatorOperator {
     division,
     clear,
     del,
+    plusMinus,
     equal,
   ];
 }
@@ -35,6 +38,7 @@ const List<List<String>> _keyRows = [
   const [
     'C',
     'DEL',
+    '±',
     '=',
   ],
   const [
@@ -63,6 +67,51 @@ const List<List<String>> _keyRows = [
   ],
 ];
 
+extension _ThemesExtension on CalculatorThemes {
+  BoxDecoration get panelButtonDecoration {
+    switch (this) {
+      case CalculatorThemes.curve:
+        return BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(topLeft: Radius.circular(48)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.shade300,
+              offset: Offset(0, -1),
+              blurRadius: 4,
+            )
+          ],
+        );
+      case CalculatorThemes.flat:
+        return BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.shade300,
+              offset: Offset(0, -1),
+              blurRadius: 4,
+            )
+          ],
+        );
+    }
+
+    return BoxDecoration(
+      color: Colors.white,
+    );
+  }
+
+  ShapeBorder get buttonShape {
+    switch (this) {
+      case CalculatorThemes.curve:
+        return StadiumBorder();
+      case CalculatorThemes.flat:
+        return RoundedRectangleBorder();
+    }
+
+    return RoundedRectangleBorder();
+  }
+}
+
 class InputCalculatorArgs {
   final String title;
   final double initialValue;
@@ -75,6 +124,7 @@ class InputCalculatorArgs {
   final Color doneButtonColor;
   final Color doneTextButtonColor;
   final bool allowNegativeResult;
+  final CalculatorThemes theme;
 
   InputCalculatorArgs({
     this.title,
@@ -88,6 +138,7 @@ class InputCalculatorArgs {
     this.doneButtonColor,
     this.doneTextButtonColor,
     this.allowNegativeResult = true,
+    this.theme = CalculatorThemes.curve,
   });
 }
 
@@ -133,15 +184,14 @@ class _CalculatorState extends State<Calculator> {
   void initState() {
     super.initState();
 
-    double initialValue = widget.args?.initialValue ?? 0;
-    var parts = '$initialValue'.split(POINT);
+    final double initialValue = widget.args?.initialValue ?? 0.0;
+    final parts = '$initialValue'.split(POINT);
 
     if (parts.length > 1 && parts[1] == '0') {
       _inputNumberController.text =
           NumberFormat.decimalPattern().format(double.parse(parts[0]));
     } else {
-      _inputNumberController.text =
-          NumberFormat.decimalPattern().format(initialValue);
+      _inputNumberController.text = NumberFormat("###.00").format(initialValue);
     }
   }
 
@@ -182,6 +232,10 @@ class _CalculatorState extends State<Calculator> {
 
       case CalculatorOperator.del:
         _removeLastNumber();
+        break;
+
+      case CalculatorOperator.plusMinus:
+        _invertNumber();
         break;
 
       case CalculatorOperator.equal:
@@ -333,6 +387,22 @@ class _CalculatorState extends State<Calculator> {
       _inputNumberController.text = value.substring(0, value.length - 1);
   }
 
+  void _invertNumber() {
+    final value = double.parse(_inputNumberController.text);
+
+    if (value == 0) return;
+
+    final parts = '$value'.split(POINT);
+
+    if (parts.length > 1 && parts[1] == '0') {
+      final value = double.parse(parts[0]);
+
+      _inputNumberController.text = NumberFormat("###").format(value * -1);
+    } else {
+      _inputNumberController.text = NumberFormat("###.00").format(value * -1);
+    }
+  }
+
   void _clear() {
     equalTitleBtn = CalculatorOperator.submit;
 
@@ -350,6 +420,8 @@ class _CalculatorState extends State<Calculator> {
     final inputContainerHeight = MediaQuery.of(context).size.height / 3;
     final keyboardTopOverlad =
         (inputContainerHeight - (MediaQuery.of(context).size.height / 4) + 16);
+    final isFlatTheme = widget.args.theme == CalculatorThemes.flat;
+
     return WillPopScope(
       onWillPop: () async {
         Navigator.of(context).pop(widget.args?.initialValue ?? 0);
@@ -371,7 +443,11 @@ class _CalculatorState extends State<Calculator> {
                 height: inputContainerHeight,
                 color: Colors.white,
                 padding: EdgeInsets.only(
-                    top: 16.0, left: 16.0, right: 16.0, bottom: 72.0),
+                  top: 16.0,
+                  left: 16.0,
+                  right: 16.0,
+                  bottom: 72.0,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
@@ -410,23 +486,12 @@ class _CalculatorState extends State<Calculator> {
               right: 0.0,
               bottom: 0.0,
               child: Container(
-                decoration: widget.args?.boxDecoration ??
-                    BoxDecoration(
-                      color: Colors.white,
-                      borderRadius:
-                          BorderRadius.only(topLeft: Radius.circular(48)),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.grey.shade300,
-                            offset: Offset(0, -1),
-                            blurRadius: 4)
-                      ],
-                    ),
-                padding: EdgeInsets.all(16.0),
+                decoration: widget.args.theme.panelButtonDecoration,
+                padding: EdgeInsets.all(isFlatTheme ? 0.0 : 16.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: _buildKeyRows(context),
+                  children: _buildKeyRows(context, isFlatTheme),
                 ),
               ),
             )
@@ -436,48 +501,62 @@ class _CalculatorState extends State<Calculator> {
     );
   }
 
-  List<Widget> _buildKeyRows(BuildContext context) {
+  List<Widget> _buildKeyRows(BuildContext context, bool isFlatTheme) {
     List<Widget> keyRows = [];
-    final screenHeight = MediaQuery.of(context).size.height;
-    var padding = EdgeInsets.all(8.0);
+    //final screenHeight = MediaQuery.of(context).size.height;
 
-    if (screenHeight <= 550) {
-      padding = EdgeInsets.all(1.0);
-    } else if (screenHeight > 550 && 600 >= screenHeight) {
-      padding = EdgeInsets.all(4.0);
-    }
+    var padding = EdgeInsets.all(isFlatTheme ? 0.0 : 8.0);
 
-    _keyRows.reversed.forEach((keyRow) => keyRows.add(
-          Row(
+    // if (screenHeight <= 550) {
+    //   padding = EdgeInsets.all(1.0);
+    // } else if (screenHeight > 550 && 600 >= screenHeight) {
+    //   padding = EdgeInsets.all(4.0);
+    // }
+
+    _keyRows.reversed.forEach(
+      (keyRow) => keyRows.add(
+        Expanded(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: _buildKeyRow(keyRow, padding, context),
+            crossAxisAlignment: isFlatTheme
+                ? CrossAxisAlignment.stretch
+                : CrossAxisAlignment.center,
+            children: _buildKeyRow(context, keyRow, padding),
           ),
-        ));
+        ),
+      ),
+    );
 
     return keyRows;
   }
 
   List<Widget> _buildKeyRow(
-      List<String> row, EdgeInsets padding, BuildContext context) {
+    BuildContext context,
+    List<String> row,
+    EdgeInsets padding,
+  ) {
     List<Widget> keyRow = [];
 
     row.forEach(
       (key) => keyRow.add(
-        _buildButtom(_isEqualOperator(key) ? equalTitleBtn : key,
-            circle: !_isMainOperator(key),
-            titleColor: _isOperator(key)
-                ? widget.args?.operatorTextButtonColor
-                : widget.args?.normalTextButtonColor,
-            color: _isOperator(key)
-                ? widget.args?.operatorButtonColor
-                : widget.args?.normalButtonColor,
-            onPressed: () => _isOperator(key)
-                ? _operatorBtnOnPressed(key)
-                : _numberBtnOnPressed(key),
-            padding: padding,
-            context: context),
+        _buildButtom(
+          _isEqualOperator(key) ? equalTitleBtn : key,
+          circle: !_isMainOperator(key),
+          titleColor: _isOperator(key)
+              ? widget.args?.operatorTextButtonColor
+              : widget.args?.normalTextButtonColor,
+          color: _isOperator(key)
+              ? widget.args?.operatorButtonColor
+              : widget.args?.normalButtonColor,
+          onPressed: () => _isOperator(key)
+              ? _operatorBtnOnPressed(key)
+              : _numberBtnOnPressed(key),
+          padding: padding,
+          context: context,
+        ),
       ),
     );
+
     return keyRow;
   }
 
@@ -489,13 +568,17 @@ class _CalculatorState extends State<Calculator> {
 
   bool _isOperator(String key) => CalculatorOperator.all.contains(key);
 
-  Widget _buildButtom(String title,
-      {bool circle = true,
-      Color titleColor,
-      Color color,
-      EdgeInsets padding,
-      Function onPressed,
-      BuildContext context}) {
+  Widget _buildButtom(
+    String title, {
+    bool circle = true,
+    Color titleColor,
+    Color color,
+    EdgeInsets padding,
+    Function onPressed,
+    BuildContext context,
+  }) {
+    final isAllowNegativeResult = widget.args.allowNegativeResult;
+
     return Expanded(
       child: Container(
         padding: padding,
@@ -505,8 +588,11 @@ class _CalculatorState extends State<Calculator> {
               ? widget.args?.doneTextButtonColor
               : titleColor,
           color: _isSumitOperator(title) ? widget.args?.doneButtonColor : color,
-          circle: circle,
-          onPressed: onPressed,
+          theme: widget.args.theme,
+          onPressed:
+              !isAllowNegativeResult && title == CalculatorOperator.plusMinus
+                  ? null
+                  : onPressed,
         ),
       ),
     );
@@ -515,17 +601,17 @@ class _CalculatorState extends State<Calculator> {
 
 class _KeyboardButton extends RawMaterialButton {
   _KeyboardButton({
-    title,
-    titleColor,
-    circle = true,
-    color,
-    elevation = 0.0,
-    onPressed,
+    String title,
+    Color titleColor = Colors.grey,
+    Color color = Colors.white,
+    double elevation = 0.0,
+    Function onPressed,
+    CalculatorThemes theme,
   }) : super(
-          fillColor: color ?? Colors.white,
-          constraints: BoxConstraints(maxWidth: 48, maxHeight: 48),
+          fillColor: onPressed != null ? color : Colors.grey.shade400,
+          //constraints: BoxConstraints(maxWidth: 48, maxHeight: 48),
           elevation: elevation,
-          shape: circle ? CircleBorder() : StadiumBorder(),
+          shape: theme.buttonShape,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
@@ -533,7 +619,7 @@ class _KeyboardButton extends RawMaterialButton {
               style: TextStyle(
                 fontSize: 16.0,
                 fontWeight: FontWeight.w700,
-                color: titleColor ?? Colors.grey,
+                color: onPressed != null ? titleColor : Colors.grey.shade300,
               ),
             ),
           ),

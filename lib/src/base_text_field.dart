@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:input_calculator/src/themes.dart';
 
 import 'calculator.dart';
 
@@ -18,6 +19,7 @@ mixin BaseTextField {
   Color get doneButtonColor;
   Color get doneTextButtonColor;
   bool get allowNegativeResult;
+  CalculatorThemes get theme;
 
   Future<double> showInputCalculator(BuildContext context) async {
     final args = InputCalculatorArgs(
@@ -32,6 +34,7 @@ mixin BaseTextField {
       doneButtonColor: doneButtonColor,
       doneTextButtonColor: doneTextButtonColor,
       allowNegativeResult: allowNegativeResult ?? true,
+      theme: theme ?? CalculatorThemes.curve,
     );
 
     final result = await Navigator.of(context).push(
