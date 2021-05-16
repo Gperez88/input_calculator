@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:input_calculator/src/themes.dart';
 import 'package:intl/intl.dart' show NumberFormat;
 
 import 'numeric_text_field.dart';
+import 'themes.dart';
 
 class CalculatorOperator {
   static const none = 'none';
@@ -67,62 +67,17 @@ const List<List<String>> _keyRows = [
   ],
 ];
 
-extension _ThemesExtension on CalculatorThemes {
-  BoxDecoration get panelButtonDecoration {
-    switch (this) {
-      case CalculatorThemes.curve:
-        return BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(48)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.shade300,
-              offset: Offset(0, -1),
-              blurRadius: 4,
-            )
-          ],
-        );
-      case CalculatorThemes.flat:
-        return BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.shade300,
-              offset: Offset(0, -1),
-              blurRadius: 4,
-            )
-          ],
-        );
-    }
-
-    return BoxDecoration(
-      color: Colors.white,
-    );
-  }
-
-  ShapeBorder get buttonShape {
-    switch (this) {
-      case CalculatorThemes.curve:
-        return StadiumBorder();
-      case CalculatorThemes.flat:
-        return RoundedRectangleBorder();
-    }
-
-    return RoundedRectangleBorder();
-  }
-}
-
 class InputCalculatorArgs {
-  final String title;
-  final double initialValue;
-  final BoxDecoration boxDecoration;
-  final Color appBarBackgroundColor;
-  final Color operatorButtonColor;
-  final Color normalButtonColor;
-  final Color operatorTextButtonColor;
-  final Color normalTextButtonColor;
-  final Color doneButtonColor;
-  final Color doneTextButtonColor;
+  final String? title;
+  final double? initialValue;
+  final BoxDecoration? boxDecoration;
+  final Color? appBarBackgroundColor;
+  final Color? operatorButtonColor;
+  final Color? normalButtonColor;
+  final Color? operatorTextButtonColor;
+  final Color? normalTextButtonColor;
+  final Color? doneButtonColor;
+  final Color? doneTextButtonColor;
   final bool allowNegativeResult;
   final CalculatorThemes theme;
 
@@ -145,7 +100,7 @@ class InputCalculatorArgs {
 class Calculator extends StatefulWidget {
   static const id = 'input_calculator';
 
-  final InputCalculatorArgs args;
+  final InputCalculatorArgs? args;
 
   Calculator({this.args});
 
@@ -174,11 +129,14 @@ class _CalculatorState extends State<Calculator> {
   bool _clickArithmeticOperator = false;
   bool _clearInput = false;
 
-  double _firstValue;
-  double _secondValue;
+  double? _firstValue;
+  double? _secondValue;
 
   String _operatorExecute = CalculatorOperator.none;
   String _prevOperatorExecute = CalculatorOperator.none;
+
+  bool _wasLastAOperator = false;
+  bool _isEqualOrSubmit = false;
 
   @override
   void initState() {
@@ -203,11 +161,16 @@ class _CalculatorState extends State<Calculator> {
 
   // listeners
   void _numberBtnOnPressed(value) {
+    _isEqualOrSubmit = false;
+
     _concatNumeric(value);
     _clickArithmeticOperator = false;
+    _wasLastAOperator = false;
   }
 
   void _operatorBtnOnPressed(value) {
+    _isEqualOrSubmit = false;
+
     switch (value) {
       case CalculatorOperator.sum:
       case CalculatorOperator.subtraction:
@@ -218,6 +181,7 @@ class _CalculatorState extends State<Calculator> {
 
         equalTitleBtn = CalculatorOperator.equal;
         _operatorExecute = value;
+        _wasLastAOperator = true;
 
         if (!_clickArithmeticOperator) {
           _clickArithmeticOperator = true;
@@ -240,6 +204,8 @@ class _CalculatorState extends State<Calculator> {
 
       case CalculatorOperator.equal:
       case CalculatorOperator.submit:
+        _isEqualOrSubmit = true;
+
         if (_inputNumberController.text == POINT) {
           String temp = _developmentOperationText;
           _clear();
@@ -272,17 +238,24 @@ class _CalculatorState extends State<Calculator> {
       _developmentOperationText = '';
     } else {
       _concatDevelopingOperation(
-          _operatorExecute, _inputNumberController.text, false);
+        _operatorExecute,
+        _inputNumberController.text,
+        false,
+      );
     }
 
     if (_firstValue == null) {
-      _firstValue =
-          double.parse(_inputNumberController.text.replaceAll(',', ''));
+      _firstValue = double.parse(
+        _inputNumberController.text.replaceAll(',', ''),
+      );
     } else if (_secondValue == null) {
-      _secondValue =
-          double.parse(_inputNumberController.text.replaceAll(',', ''));
+      _secondValue = double.parse(
+        _inputNumberController.text.replaceAll(',', ''),
+      );
 
-      _executeOperation(_prevOperatorExecute);
+      if ((_wasLastAOperator && !_isEqualOrSubmit) ||
+          (!_wasLastAOperator && _isEqualOrSubmit))
+        _executeOperation(_prevOperatorExecute);
     }
 
     _prevOperatorExecute = _operatorExecute;
@@ -303,33 +276,34 @@ class _CalculatorState extends State<Calculator> {
   void _executeOperation(String calculatorOperator) {
     if (_firstValue == null || _secondValue == null) return;
 
-    double resultOperation = 0.0;
+    double? resultOperation = 0.0;
 
     switch (calculatorOperator) {
       case CalculatorOperator.sum:
-        resultOperation = _firstValue + _secondValue;
+        resultOperation = _firstValue! + _secondValue!;
         break;
 
       case CalculatorOperator.subtraction:
-        resultOperation = _firstValue - _secondValue;
+        resultOperation = _firstValue! - _secondValue!;
         break;
 
       case CalculatorOperator.multiplication:
-        resultOperation = _firstValue * _secondValue;
+        resultOperation = _firstValue! * _secondValue!;
         break;
 
       case CalculatorOperator.division:
-        if (_secondValue > 0) resultOperation = _firstValue / _secondValue;
+        if (_secondValue! > 0) resultOperation = _firstValue! / _secondValue!;
         break;
     }
 
     _inputNumberController.text = _formatValue(resultOperation);
     _firstValue = resultOperation;
+
     _secondValue = null;
   }
 
   void _concatNumeric(String value) {
-    if (value == null || _inputNumberController.text == null) return;
+    if (value.isEmpty) return;
 
     String oldValue = _inputNumberController.text;
     String newValue = _clearInput || (oldValue == ZERO && value != POINT)
@@ -420,7 +394,7 @@ class _CalculatorState extends State<Calculator> {
     final inputContainerHeight = MediaQuery.of(context).size.height / 3;
     final keyboardTopOverlad =
         (inputContainerHeight - (MediaQuery.of(context).size.height / 4) + 16);
-    final isFlatTheme = widget.args.theme == CalculatorThemes.flat;
+    final isFlatTheme = widget.args!.theme == CalculatorThemes.flat;
 
     return WillPopScope(
       onWillPop: () async {
@@ -466,7 +440,7 @@ class _CalculatorState extends State<Calculator> {
                       controller: _inputNumberController,
                       textAlign: TextAlign.end,
                       readOnly: true,
-                      allowNegativeResult: widget.args.allowNegativeResult,
+                      allowNegativeResult: widget.args!.allowNegativeResult,
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         hintText: '0',
@@ -486,7 +460,7 @@ class _CalculatorState extends State<Calculator> {
               right: 0.0,
               bottom: 0.0,
               child: Container(
-                decoration: widget.args.theme.panelButtonDecoration,
+                decoration: widget.args!.theme.panelButtonDecoration,
                 padding: EdgeInsets.all(isFlatTheme ? 0.0 : 8.0),
                 child: Column(
                   //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -571,13 +545,13 @@ class _CalculatorState extends State<Calculator> {
   Widget _buildButtom(
     String title, {
     bool circle = true,
-    Color titleColor,
-    Color color,
-    EdgeInsets padding,
-    Function onPressed,
-    BuildContext context,
+    Color? titleColor,
+    Color? color,
+    EdgeInsets? padding,
+    Function? onPressed,
+    BuildContext? context,
   }) {
-    final isAllowNegativeResult = widget.args.allowNegativeResult;
+    final isAllowNegativeResult = widget.args!.allowNegativeResult;
 
     return Expanded(
       child: Container(
@@ -588,7 +562,7 @@ class _CalculatorState extends State<Calculator> {
               ? widget.args?.doneTextButtonColor
               : titleColor,
           color: _isSumitOperator(title) ? widget.args?.doneButtonColor : color,
-          theme: widget.args.theme,
+          theme: widget.args!.theme,
           onPressed:
               !isAllowNegativeResult && title == CalculatorOperator.plusMinus
                   ? null
@@ -601,12 +575,12 @@ class _CalculatorState extends State<Calculator> {
 
 class _KeyboardButton extends RawMaterialButton {
   _KeyboardButton({
-    String title,
-    Color titleColor = Colors.grey,
-    Color color = Colors.white,
+    String? title,
+    Color? titleColor = Colors.grey,
+    Color? color = Colors.white,
     double elevation = 0.0,
-    Function onPressed,
-    CalculatorThemes theme,
+    Function? onPressed,
+    CalculatorThemes? theme,
   }) : super(
           fillColor: onPressed != null ? color : Colors.grey.shade400,
           //constraints: BoxConstraints(maxWidth: 48, maxHeight: 48),
@@ -623,6 +597,6 @@ class _KeyboardButton extends RawMaterialButton {
               ),
             ),
           ),
-          onPressed: onPressed,
+          onPressed: onPressed as void Function()?,
         );
 }

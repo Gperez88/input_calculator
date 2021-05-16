@@ -4,20 +4,20 @@ import 'package:intl/intl.dart' show NumberFormat;
 import 'utils.dart';
 
 class NumericTextField extends StatefulWidget {
-  final TextEditingController controller;
-  final String initialValue;
-  final TextAlign textAlign;
-  final TextStyle style;
+  final TextEditingController? controller;
+  final String? initialValue;
+  final TextAlign? textAlign;
+  final TextStyle? style;
   final bool readOnly;
   final InputDecoration decoration;
-  final Function onTap;
-  final ValueChanged<String> onChanged;
-  final VoidCallback onEditingComplete;
-  final ValueChanged<String> onSubmitted;
+  final Function? onTap;
+  final ValueChanged<String>? onChanged;
+  final VoidCallback? onEditingComplete;
+  final ValueChanged<String>? onSubmitted;
   final bool allowNegativeResult;
 
   NumericTextField({
-    Key key,
+    Key? key,
     this.initialValue,
     this.controller,
     this.textAlign,
@@ -41,12 +41,12 @@ class _NumericTextFieldState extends State<NumericTextField> {
   static const String NEGATIVE = '-';
   static const String LEADING_ZERO_FILTER_REGEX = "^0+(?!\$)";
 
-  TextEditingController _controller;
+  TextEditingController? _controller;
 
-  TextEditingController get _effectiveController =>
+  TextEditingController? get _effectiveController =>
       widget.controller ?? _controller;
 
-  String _mDefaultText;
+  String? _mDefaultText;
   String _mPreviousText = "";
   String _mNumberFilterRegex = "[^\\d\\$DECIMAL_SEPARATOR]";
   String _mWithNegativeNumberFilterRegex =
@@ -62,24 +62,24 @@ class _NumericTextFieldState extends State<NumericTextField> {
     if (widget.controller == null) {
       _controller = TextEditingController(text: widget.initialValue);
     } else {
-      widget.controller.addListener(_afterTextChanged);
+      widget.controller!.addListener(_afterTextChanged);
     }
   }
 
   void _afterTextChanged() {
-    final value = _effectiveController.text;
-    bool validateLock = false;
+    final value = _effectiveController!.text;
+    // bool validateLock = false;
 
-    if (validateLock) return;
+    // if (validateLock) return;
 
     // valid decimal number should not have more than 2 decimal separators
     if (StringUtils.countMatches(value, _mDecimalSeparator) > 1) {
-      validateLock = true;
-      _effectiveController.text = _mPreviousText;
-      _effectiveController.selection = TextSelection(
+      //validateLock = true;
+      _effectiveController!.text = _mPreviousText;
+      _effectiveController!.selection = TextSelection(
           baseOffset: _mPreviousText.length,
           extentOffset: _mPreviousText.length);
-      validateLock = false;
+      //validateLock = false;
       return;
     }
 
@@ -88,7 +88,7 @@ class _NumericTextFieldState extends State<NumericTextField> {
       return;
     }
 
-    final valueFormated = format(value);
+    final valueFormated = format(value)!;
 
     _setTextInternal(valueFormated);
     _handleNumericValueChanged();
@@ -102,7 +102,7 @@ class _NumericTextFieldState extends State<NumericTextField> {
   }
 
   void _handleNumericValueChanged() {
-    _mPreviousText = _effectiveController.text;
+    _mPreviousText = _effectiveController!.text;
     for (NumericValueWatcher listener in _mNumericListeners) {
       listener.onChanged(getNumericValue());
     }
@@ -122,10 +122,10 @@ class _NumericTextFieldState extends State<NumericTextField> {
     if (_hasCustomDecimalSeparator) {
       // swap locale decimal separator with custom one for display
       _mDefaultText =
-          _mDefaultText.replaceAll(DECIMAL_SEPARATOR, _mDecimalSeparator);
+          _mDefaultText!.replaceAll(DECIMAL_SEPARATOR, _mDecimalSeparator);
     }
 
-    _setTextInternal(_mDefaultText);
+    _setTextInternal(_mDefaultText!);
   }
 
   /*
@@ -147,7 +147,7 @@ class _NumericTextFieldState extends State<NumericTextField> {
   */
   void clear() {
     _setTextInternal(
-        _mDefaultText != null ? _mDefaultText : widget.initialValue);
+        _mDefaultText != null ? _mDefaultText! : widget.initialValue!);
     if (_mDefaultText != null) {
       _handleNumericValueChanged();
     }
@@ -161,7 +161,7 @@ class _NumericTextFieldState extends State<NumericTextField> {
   double getNumericValue() {
     final allowNegativeResult = widget.allowNegativeResult;
 
-    var original = _effectiveController.text.replaceAll(
+    var original = _effectiveController!.text.replaceAll(
         RegExp(allowNegativeResult
             ? _mWithNegativeNumberFilterRegex
             : _mNumberFilterRegex),
@@ -185,18 +185,19 @@ class _NumericTextFieldState extends State<NumericTextField> {
   * @param original original string, may already contains incorrect grouping separators
   * @return string with correct grouping separators
   */
-  String format(final String original) {
+  String? format(final String original) {
     final List parts = original.split("$_mDecimalSeparator");
 
     final allowNegativeResult = widget.allowNegativeResult;
 
     String number = parts[0]
-        .replaceAll(
-            RegExp(allowNegativeResult
-                ? _mWithNegativeNumberFilterRegex
-                : _mNumberFilterRegex),
-            '')
-        .replaceFirst(RegExp(LEADING_ZERO_FILTER_REGEX), '');
+            .replaceAll(
+                RegExp(allowNegativeResult
+                    ? _mWithNegativeNumberFilterRegex
+                    : _mNumberFilterRegex),
+                '')
+            .replaceFirst(RegExp(LEADING_ZERO_FILTER_REGEX), '') ??
+        '';
 
     // only add grouping separators for non custom decimal separator
     if (!_hasCustomDecimalSeparator) {
@@ -204,8 +205,13 @@ class _NumericTextFieldState extends State<NumericTextField> {
       number = number.replaceAll(GROUPING_SEPARATOR, '');
 
       // add againt grouping separators, need to reverse back and forth since Java regex does not support
-      number = StringUtils.reverse(StringUtils.reverse(number).replaceAllMapped(
-          RegExp('(.{3})'), (m) => '${m[1]}$GROUPING_SEPARATOR'));
+      number = StringUtils.reverse(
+            StringUtils.reverse(number)?.replaceAllMapped(
+              RegExp('(.{3})'),
+              (m) => '${m[1]}$GROUPING_SEPARATOR',
+            ),
+          ) ??
+          '';
 
       number = StringUtils.removeStart(number, GROUPING_SEPARATOR);
     }
@@ -229,9 +235,9 @@ class _NumericTextFieldState extends State<NumericTextField> {
   * @param text new text to apply
   */
   void _setTextInternal(String text) {
-    _effectiveController.removeListener(_afterTextChanged);
-    _effectiveController.text = text;
-    _effectiveController.addListener(_afterTextChanged);
+    _effectiveController!.removeListener(_afterTextChanged);
+    _effectiveController!.text = text;
+    _effectiveController!.addListener(_afterTextChanged);
   }
 
   /*
@@ -261,7 +267,7 @@ class _NumericTextFieldState extends State<NumericTextField> {
         style: widget.style,
         readOnly: widget.readOnly,
         controller: _effectiveController,
-        onTap: widget.onTap,
+        onTap: widget.onTap as void Function()?,
         onChanged: widget.onChanged,
         onSubmitted: widget.onSubmitted,
         onEditingComplete: widget.onEditingComplete,
