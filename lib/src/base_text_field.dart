@@ -1,27 +1,27 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:input_calculator/src/themes.dart';
 
 import 'calculator.dart';
+import 'themes.dart';
 
 typedef ValueFormat<T> = String Function(T value);
 
 mixin BaseTextField {
   // calculator
-  String get title;
+  String? get title;
   double get initialValue;
-  BoxDecoration get boxDecoration;
-  Color get appBarBackgroundColor;
+  BoxDecoration? get boxDecoration;
+  Color? get appBarBackgroundColor;
   Color get operatorButtonColor;
   Color get normalButtonColor;
   Color get operatorTextButtonColor;
   Color get normalTextButtonColor;
   Color get doneButtonColor;
   Color get doneTextButtonColor;
-  bool get allowNegativeResult;
-  CalculatorThemes get theme;
+  bool? get allowNegativeResult;
+  CalculatorThemes? get theme;
 
-  Future<double> showInputCalculator(BuildContext context) async {
+  Future<double?> showInputCalculator(BuildContext context) async {
     final args = InputCalculatorArgs(
       title: title ?? '',
       initialValue: initialValue,

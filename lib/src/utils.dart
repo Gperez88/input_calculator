@@ -24,7 +24,7 @@ class StringUtils {
     return subject[_realPosition];
   }
 
-  static String reverse(final String str) {
+  static String? reverse(final String? str) {
     if (str == null) {
       return null;
     }

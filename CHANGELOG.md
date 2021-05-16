@@ -1,3 +1,9 @@
+## [2.0.0] - 16.05.2021.
+
+* Support null-safety.
+* Fixed Intl dependece error.
+* Improved calculator result.
+
 ## [1.1.0+5] - 08.07.2020.
 
 * Themes [`CalculatorThemes.curve` | `CalculatorThemes.flat`].

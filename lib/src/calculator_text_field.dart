@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:input_calculator/src/themes.dart';
 
 import 'base_text_field.dart';
-import 'calculator.dart';
+import 'themes.dart';
 
 class CalculatorTextField extends StatefulWidget with BaseTextField {
   CalculatorTextField({
-    Key key,
+    Key? key,
     this.title,
     this.initialValue = 0.0,
     this.boxDecoration,
@@ -27,22 +26,22 @@ class CalculatorTextField extends StatefulWidget with BaseTextField {
     this.theme = CalculatorThemes.curve,
   }) : super(key: key);
 
-  final String title;
+  final String? title;
   final double initialValue;
-  final BoxDecoration boxDecoration;
-  final Color appBarBackgroundColor;
+  final BoxDecoration? boxDecoration;
+  final Color? appBarBackgroundColor;
   final Color operatorButtonColor;
   final Color operatorTextButtonColor;
   final Color normalButtonColor;
   final Color normalTextButtonColor;
   final Color doneButtonColor;
   final Color doneTextButtonColor;
-  final ValueChanged<double> onSubmitted;
+  final ValueChanged<double?>? onSubmitted;
   final InputDecoration inputDecoration;
-  final TextStyle style;
-  final StrutStyle strutStyle;
+  final TextStyle? style;
+  final StrutStyle? strutStyle;
   final TextAlign textAlign;
-  final ValueFormat<double> valueFormat;
+  final ValueFormat<double?>? valueFormat;
   final bool allowNegativeResult;
   final CalculatorThemes theme;
 
@@ -60,9 +59,9 @@ class _CalculatorTextFieldState extends State<CalculatorTextField> {
     setValue(widget.initialValue);
   }
 
-  void setValue(double value) {
+  void setValue(double? value) {
     inputController.text =
-        widget.valueFormat != null ? widget.valueFormat(value) : '$value';
+        widget.valueFormat != null ? widget.valueFormat!(value) : '$value';
   }
 
   @override
@@ -79,7 +78,7 @@ class _CalculatorTextFieldState extends State<CalculatorTextField> {
         setState(() {
           setValue(result);
 
-          if (widget.onSubmitted != null) widget.onSubmitted(result);
+          if (widget.onSubmitted != null) widget.onSubmitted!(result);
         });
       },
     );
