@@ -25,6 +25,7 @@ class CalculatorTextFormField extends StatefulWidget with BaseTextField {
     this.valueFormat,
     this.allowNegativeResult = true,
     this.theme = CalculatorThemes.curve,
+    this.enabled = true,
   }) : super(key: key);
 
   final String? title;
@@ -46,6 +47,7 @@ class CalculatorTextFormField extends StatefulWidget with BaseTextField {
   final ValueFormat<double?>? valueFormat;
   final bool allowNegativeResult;
   final CalculatorThemes theme;
+  final bool enabled;
 
   @override
   _CalculatorTextFormFieldState createState() =>
@@ -77,6 +79,7 @@ class _CalculatorTextFormFieldState extends State<CalculatorTextFormField> {
       textAlign: widget.textAlign,
       validator: widget.validator,
       decoration: widget.inputDecoration,
+      enabled: widget.enabled,
       onTap: () async {
         final result = await widget.showInputCalculator(context);
         setState(() {
